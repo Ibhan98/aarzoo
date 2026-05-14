@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — Aarzoo Electronics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #0071e3;
+      --primary-dark: #0051a2;
+      --accent: #ff6b00;
+      --bg: #f5f5f7;
+      --bg-white: #ffffff;
+      --text: #1d1d1f;
+      --text-muted: #6e6e73;
+      --border: #d2d2d7;
+      --card-radius: 18px;
+      --nav-height: 64px;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    nav {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100; height: var(--nav-height);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 100%;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    }
+    .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: -0.5px; }
+    .logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 14px; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-actions { display: flex; align-items: center; gap: 16px; }
+    .cart-btn {
+      position: relative; text-decoration: none; background: var(--primary); color: white;
+      padding: 8px 18px; border-radius: 999px; font-size: 14px; font-weight: 500;
+      display: flex; align-items: center; gap: 6px; transition: background .2s;
+    }
+    .cart-btn:hover { background: var(--primary-dark); }
+    .cart-count {
+      background: var(--accent); color: white; font-size: 10px; font-weight: 700;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      position: absolute; top: -4px; right: -4px;
+    }
+    .page-header { background: var(--bg-white); border-bottom: 1px solid var(--border); padding: 32px 24px; }
+    .page-header-inner { max-width: 1200px; margin: 0 auto; }
+    .page-header h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; }
+    .breadcrumb { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .section { max-width: 1200px; margin: 0 auto; padding: 60px 24px; }
+    .cart-layout { display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
+    .cart-item { display: flex; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .cart-item img { width: 72px; height: 72px; object-fit: contain; background: #f5f5f7; border-radius: 10px; padding: 6px; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .cart-item-price { font-size: 14px; color: var(--primary); font-weight: 700; }
+    .qty-control { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--bg); cursor: pointer; font-size: 16px; font-weight: 500;
+      display: flex; align-items: center; justify-content: center; transition: background .15s;
+    }
+    .qty-btn:hover { background: var(--border); }
+    .qty-num { font-size: 15px; font-weight: 600; min-width: 20px; text-align: center; }
+    .remove-btn { color: #dc2626; background: none; border: none; cursor: pointer; font-size: 13px; margin-left: auto; font-family: 'Inter', sans-serif; }
+    .order-summary {
+      background: var(--bg-white); border-radius: var(--card-radius);
+      padding: 24px; border: 1px solid var(--border);
+      position: sticky; top: calc(var(--nav-height) + 16px);
+    }
+    .summary-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 12px; }
+    .summary-row.total { font-weight: 700; font-size: 16px; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
+    .checkout-btn {
+      width: 100%; padding: 14px; background: var(--primary); color: white; border: none;
+      border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+      margin-top: 16px; transition: background .2s; font-family: 'Inter', sans-serif;
+    }
+    .checkout-btn:hover { background: var(--primary-dark); }
+    .empty-cart { text-align: center; padding: 60px 20px; }
+    .empty-cart .icon { font-size: 60px; margin-bottom: 16px; }
+    .empty-cart h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .empty-cart p { color: var(--text-muted); margin-bottom: 24px; }
+    .btn-primary {
+      display: inline-block; background: var(--primary); color: white; padding: 13px 28px;
+      border-radius: 999px; font-size: 15px; font-weight: 600; text-decoration: none; transition: background .2s;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+    footer { background: #0a0a0a; color: rgba(255,255,255,0.65); padding: 48px 24px 24px; margin-top: 60px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+    .footer-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: white; margin-bottom: 10px; }
+    .footer-logo span { color: var(--primary); }
+    .footer-desc { font-size: 13px; line-height: 1.7; }
+    .footer-col h4 { color: white; font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+    .footer-col a { display: block; font-size: 13px; color: rgba(255,255,255,0.55); text-decoration: none; margin-bottom: 8px; transition: color .2s; }
+    .footer-col a:hover { color: white; }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; text-align: center; }
+    #toast {
+      position: fixed; bottom: 24px; right: 24px; background: #111; color: #fff;
+      padding: 12px 20px; border-radius: 10px; font-size: 14px; z-index: 9999;
+      opacity: 0; transition: opacity .3s; pointer-events: none;
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .cart-layout { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .order-summary { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="logo">aar<span>zoo</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Cart
+          <span class="cart-count" style="display:none">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-header-inner">
+      <h1>Your Cart</h1>
+      <div class="breadcrumb"><a href="index.html">Home</a> › Cart</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div id="cart-content"></div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">aar<span>zoo</span></div>
+        <p class="footer-desc">India's trusted destination for premium electronics.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="products.html?category=smartphones">iPhones</a>
+        <a href="products.html?category=wearables">Apple Watch</a>
+        <a href="products.html?category=audio">AirPods</a>
+        <a href="products.html?category=appliances">Air Conditioners</a>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <a href="#">Contact Us</a>
+        <a href="#">Track Order</a>
+        <a href="#">Returns Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 Aarzoo Electronics. All rights reserved.</div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    function renderCart() {
+      const cart = getCart();
+      const container = document.getElementById('cart-content');
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="empty-cart">
+            <div class="icon">🛒</div>
+            <h2>Your cart is empty</h2>
+            <p>Looks like you haven't added anything yet.</p>
+            <a href="products.html" class="btn-primary">Browse Products</a>
+          </div>`;
+        return;
+      }
+      const total = getCartTotal();
+      const shipping = total > 50000 ? 0 : 199;
+      const grandTotal = total + shipping;
+      container.innerHTML = `
+        <div class="cart-layout">
+          <div>
+            <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px">
+              ${cart.length} item${cart.length > 1 ? 's' : ''}
+            </h2>
+            <div id="cart-items">
+              ${cart.map(item => `
+                <div class="cart-item">
+                  <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/72x72?text=?'">
+                  <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-price">₹${(item.price * item.qty).toLocaleString('en-IN')}</div>
+                    <div class="qty-control">
+                      <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
+                      <span class="qty-num">${item.qty}</span>
+                      <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                    </div>
+                  </div>
+                  <button class="remove-btn" onclick="removeFromCart(${item.id})">✕ Remove</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="order-summary">
+            <div class="summary-title">Order Summary</div>
+            <div class="summary-row"><span>Subtotal</span><span>₹${total.toLocaleString('en-IN')}</span></div>
+            <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:green">Free</span>' : '₹' + shipping}</span></div>
+            ${total < 50000 ? `<div style="font-size:12px;color:var(--text-muted);margin:-4px 0 8px">Add ₹${(50000-total).toLocaleString('en-IN')} more for free shipping</div>` : ''}
+            <div class="summarS
