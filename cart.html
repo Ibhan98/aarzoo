@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — Aarzoo Electronics</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="logo">aar<span>zoo</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Cart
+          <span class="cart-count" style="display:none">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-header-inner">
+      <h1>Your Cart</h1>
+      <div class="breadcrumb"><a href="index.html">Home</a> › Cart</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div id="cart-content"></div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div><div class="footer-logo">aar<span>zoo</span></div></div>
+    </div>
+    <div class="footer-bottom">© 2025 Aarzoo Electronics.</div>
+  </footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    function renderCart() {
+      const cart = getCart();
+      const container = document.getElementById('cart-content');
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="empty-cart">
+            <div class="icon">🛒</div>
+            <h2>Your cart is empty</h2>
+            <p>Looks like you haven't added anything yet.</p>
+            <a href="products.html" class="btn-primary">Browse Products</a>
+          </div>`;
+        return;
+      }
+
+      const total = getCartTotal();
+      const shipping = total > 50000 ? 0 : 199;
+      const grandTotal = total + shipping;
+
+      container.innerHTML = `
+        <div class="cart-layout">
+          <div>
+            <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px">
+              ${cart.length} item${cart.length > 1 ? 's' : ''}
+            </h2>
+            <div id="cart-items">
+              ${cart.map(item => `
+                <div class="cart-item">
+                  <img src="${item.image}" alt="${item.name}"
+                       onerror="this.src='https://via.placeholder.com/72x72?text=?'">
+                  <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-price">₹${(item.price * item.qty).toLocaleString('en-IN')}</div>
+                    <div class="qty-control">
+                      <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
+                      <span class="qty-num">${item.qty}</span>
+                      <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                    </div>
+                  </div>
+                  <button class="remove-btn" onclick="removeFromCart(${item.id})">✕ Remove</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="order-summary">
+            <div class="summary-title">Order Summary</div>
+            <div class="summary-row"><span>Subtotal</span><span>₹${total.toLocaleString('en-IN')}</span></div>
+            <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:green">Free</span>' : '₹' + shipping}</span></div>
+            ${total < 50000 ? `<div style="font-size:12px;color:var(--text-muted);margin:-4px 0 8px">Add ₹${(50000-total).toLocaleString('en-IN')} more for free shipping</div>` : ''}
+            <div class="summary-row total"><span>Total</span><span>₹${grandTotal.toLocaleString('en-IN')}</span></div>
+            <a href="checkout.html"><button class="checkout-btn">Proceed to Checkout →</button></a>
+            <a href="products.html" style="display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--text-muted);text-decoration:none">← Continue Shopping</a>
+          </div>
+        </div>`;
+    }
+
+    // Override updateCartCount to also re-render cart
+    const _updateCartCount = updateCartCount;
+    function updateQtyAndRender(id, delta) {
+      const cart = getCart();
+      const item = cart.find(i => i.id === id);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+          saveCart(cart.filter(i => i.id !== id));
+        } else {
+          saveCart(cart);
+        }
+      }
+      renderCart();
+    }
+
+    // Patch removeFromCart to re-render
+    const _remove = removeFromCart;
+    function removeFromCart(id) {
+      _remove(id);
+      renderCart();
+    }
+
+    function updateQty(id, delta) {
+      updateQtyAndRender(id, delta);
+    }
+
+    renderCart();
+  </script>
+
+</body>
+</html>

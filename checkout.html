@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — Aarzoo Electronics</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="logo">aar<span>zoo</span></a>
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Cart
+          <span class="cart-count" style="display:none">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-header-inner">
+      <h1>Checkout</h1>
+      <div class="breadcrumb"><a href="index.html">Home</a> › <a href="cart.html">Cart</a> › Checkout</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="checkout-grid">
+      <!-- LEFT: FORM -->
+      <div>
+        <!-- Contact -->
+        <div class="form-section">
+          <h2>Contact Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="fname" placeholder="Ravi" required>
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="lname" placeholder="Sharma" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="ravi@email.com" required>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="+91 98765 43210" required>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="form-section">
+          <h2>Delivery Address</h2>
+          <div class="form-group">
+            <label>Address Line 1</label>
+            <input type="text" id="addr1" placeholder="Flat / House No, Building, Street" required>
+          </div>
+          <div class="form-group">
+            <label>Address Line 2 (optional)</label>
+            <input type="text" id="addr2" placeholder="Area, Landmark">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="city" placeholder="Hyderabad" required>
+            </div>
+            <div class="form-group">
+              <label>State</label>
+              <select id="state">
+                <option>Telangana</option>
+                <option>Andhra Pradesh</option>
+                <option>Maharashtra</option>
+                <option>Karnataka</option>
+                <option>Tamil Nadu</option>
+                <option>Delhi</option>
+                <option>Gujarat</option>
+                <option>Rajasthan</option>
+                <option>West Bengal</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>PIN Code</label>
+            <input type="text" id="pin" placeholder="500001" maxlength="6" required>
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="form-section">
+          <h2>Payment Method</h2>
+          <label class="payment-option">
+            <input type="radio" name="payment" value="cod" checked>
+            <span>💵</span>
+            <div>
+              <div style="font-weight:600;font-size:14px">Cash on Delivery</div>
+              <div style="font-size:12px;color:var(--text-muted)">Pay when your order arrives</div>
+            </div>
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="payment" value="upi">
+            <span>📱</span>
+            <div>
+              <div style="font-weight:600;font-size:14px">UPI / Google Pay / PhonePe</div>
+              <div style="font-size:12px;color:var(--text-muted)">Instant payment via UPI</div>
+            </div>
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="payment" value="card">
+            <span>💳</span>
+            <div>
+              <div style="font-weight:600;font-size:14px">Credit / Debit Card</div>
+              <div style="font-size:12px;color:var(--text-muted)">Visa, Mastercard, RuPay</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- RIGHT: ORDER SUMMARY -->
+      <div class="order-summary">
+        <div class="summary-title">Order Summary</div>
+        <div id="checkout-items" style="margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:16px"></div>
+        <div class="summary-row"><span>Subtotal</span><span id="c-subtotal">₹0</span></div>
+        <div class="summary-row"><span>Shipping</span><span id="c-shipping">₹199</span></div>
+        <div class="summary-row total"><span>Total</span><span id="c-total">₹0</span></div>
+        <button class="checkout-btn" onclick="placeOrder()">Place Order 🎉</button>
+        <a href="cart.html" style="display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--text-muted);text-decoration:none">← Back to Cart</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div id="success-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;">
+    <div style="background:white;border-radius:20px;padding:40px;max-width:420px;width:90%;text-align:center;">
+      <div style="font-size:56px;margin-bottom:16px">🎉</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:8px">Order Placed!</h2>
+      <p style="color:var(--text-muted);margin-bottom:8px">Thank you for shopping at Aarzoo Electronics.</p>
+      <p style="color:var(--text-muted);font-size:14px;margin-bottom:28px">You'll receive a confirmation SMS on your registered number within 10 minutes.</p>
+      <a href="index.html">
+        <button class="btn-primary" style="width:100%;padding:14px">Continue Shopping</button>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div><div class="footer-logo">aar<span>zoo</span></div></div>
+    </div>
+    <div class="footer-bottom">© 2025 Aarzoo Electronics.</div>
+  </footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    function loadSummary() {
+      const cart = getCart();
+      const subtotal = getCartTotal();
+      const shipping = subtotal > 50000 ? 0 : 199;
+      const total = subtotal + shipping;
+
+      document.getElementById('checkout-items').innerHTML = cart.map(item => `
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+          <img src="${item.image}" alt="${item.name}" style="width:44px;height:44px;object-fit:contain;background:#f5f5f7;border-radius:8px;padding:4px"
+               onerror="this.src='https://via.placeholder.com/44?text=?'">
+          <div style="flex:1;font-size:13px;font-weight:500">${item.name} × ${item.qty}</div>
+          <div style="font-size:13px;font-weight:600">₹${(item.price * item.qty).toLocaleString('en-IN')}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('c-subtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+      document.getElementById('c-shipping').innerHTML = shipping === 0
+        ? '<span style="color:green">Free</span>'
+        : '₹' + shipping;
+      document.getElementById('c-total').textContent = '₹' + total.toLocaleString('en-IN');
+    }
+
+    function placeOrder() {
+      const required = ['fname','lname','email','phone','addr1','city','pin'];
+      for (const id of required) {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) {
+          el.focus();
+          el.style.borderColor = '#dc2626';
+          showToast('Please fill in all required fields');
+          return;
+        }
+        el.style.borderColor = '';
+      }
+      if (getCart().length === 0) { showToast('Your cart is empty!'); return; }
+      clearCart();
+      document.getElementById('success-overlay').style.display = 'flex';
+    }
+
+    loadSummary();
+  </script>
+
+</body>
+</html>
